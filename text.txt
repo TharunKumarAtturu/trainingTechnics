@@ -1,5 +1,108 @@
-my first text.
-my first text.
-my first text.
-my first text.
-my first text.
+// framework to write the data into a file and read the data from the file.
+//……………………………………………………………………………….
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+FILE *fp_menu;
+FILE *fp_fields;
+FILE *fp_data;
+
+
+
+void exit_from_main_menu();
+int get_fields_count();
+void read();
+void show_main_menu();
+
+
+int main() { 
+int fields_count = get_fields_count(fp_fields);
+show_main_menu(fp_menu, fp_fields, fp_data, fields_count);
+}
+int get_fields_count(FILE *fp_fields) {
+int counter = 0;
+char fields_name[LENGTH_OF_FIELD];
+fp_fields = fopen(FIELD_FILE, “r”);
+if (fp_fields == NULL) {
+	printf(“ERROR!”);
+	return 0;
+}
+else {
+	while(fgets(fields_name, sizeof(fields_name), fp_fields) > 0) {
+            	counter =counter +1;
+	}
+
+}
+fclose(fp_fields);
+return counter;
+}
+
+void exit_from_main_menu() {
+	printf(“THANK YOU.”);
+	exit(0);
+}
+
+void read(FILE *fp_data, int fields_count) {
+	fp_data = fopen(DATA_FILE, “r”);
+	char record[LENGTH_OF_FIELDS * fields_count];
+	while(fgets(records, sizeof(records), fp_data) > 0) {
+puts(records);
+}
+fclose(fp_data);
+}
+
+void create (FILE *fp_fields, FILE *fp_data, int fields_count) {
+	fp_fields = fopen (FIELDS_FILE, “r”);
+	char fields_name[ LENGTH_OF_FIELDS * fields_count];
+	fp_data = fopen(DATA_FILE, “a”);
+while(fgets(fields_name, sizeof(fields_name), fp_fields) != 0 ) {
+	fields_name[strlen(fields_name) - 1] = ‘\0’;
+	printf(“Enter %s: ”, fields_name);
+	fflush(stdin);
+	gets(fields_name);
+	fprintf(fp_data, “%s”, fields_name);
+} 
+fprintf(fp_data, “\n”);
+fclose(fp_data);
+fclose(fp_fields);
+}
+
+void show_main_menu(FILE *fp_menu, FILE *fp_feilds, FILE *fp_data, fields_count) {
+	fp_menu = fopen(MENU_FILE, “r”);
+	char menu_line[LENGTH_OF_FIELD];
+	if (fp_menu == NULL) {
+  		printf(“ERROR!”);
+	}
+	else {
+		while(fgets(menu_line, sizeof(menu_line), fp_menu) != 0 ) {
+		printf(“%s”, menu_line);
+	} 
+ 	int option = 0;
+	while(1) {
+		printf(“\n Enter the option: ”);
+		scanf(“%d”, &option);
+		switch(option) {
+			case 1: 
+				create(fp_feilds, fp_data, fields_count);
+				break;
+			case 2: 
+				read(fp_data, fields_count);
+				break;
+			case 3: 
+ 				exit_from_main_menu();
+			default:
+ 			printf(“please Enter the valid option!”);
+			break;
+		}	
+
+	}
+}
+
+
+//framework_file.c
+//…………………
+
+#define MENU_FILE 
+#define FIELD_FILE
+#define DATA_FILE
+#define LENGTH_OF_FIELD 20
