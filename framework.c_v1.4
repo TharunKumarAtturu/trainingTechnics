@@ -3,13 +3,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "framwork_file.c"
+// #include "framwork_file.c"
+#define FILE_MENU "menu.cfg"
+#define FILE_FIELDS "fields.cfg"
+#define FILE_DATA "data.dat"
+#define LENGTH_OF_FIELD 20
+#define LENGTH_OF_MENU_LINE 20
+#define LENGTH_OF_FIELD_VALUE 20
+#define LENGTH_OF_FIELD_NAMES 20
+#define LENGTH_OF_RECORD 20
  
 void exitFromMainMenu();
 void showMainMenu();
 int get_count_of_fields();
-void create();
-void read();
+void create_records();
+void read_records();
 
 
 
@@ -28,7 +36,7 @@ int main() {
 
 void showMainMenu(FILE *fp_menu, FILE *fp_fields, FILE *fp_data, int fields_count) {
     fp_menu = fopen( FILE_MENU, "r");
-    char menu_line[LENGTH_OF_FIELD];
+    char menu_line[LENGTH_OF_MENU_LINE];
     if (fp_menu == NULL) {
         printf("ERROR!");
     }
@@ -44,11 +52,14 @@ void showMainMenu(FILE *fp_menu, FILE *fp_fields, FILE *fp_data, int fields_coun
         scanf("%d", &option);
         switch(option) {
             case 1:
-            create(fp_fields, fp_data, fields_count);
+            create_records(fp_fields, fp_data, fields_count);
             break;
             case 2: 
-            read(fp_data, fields_count);
+            read_records(fp_data, fields_count);
             break;
+            // case 3: 
+            // update(fp_data, fields_count, fp_fields);
+            // break;
             case 3:
             exitFromMainMenu();
             break;
@@ -79,32 +90,32 @@ int get_count_of_fields(FILE *fp_fields, int counter) {
 }
 
 
-void create(FILE *fp_fields, FILE *fp_data, int fields_count) {
+void create_records(FILE *fp_fields, FILE *fp_data, int fields_count) {
     fp_fields = fopen (FILE_FIELDS, "r");
-    char fields_name[LENGTH_OF_FIELD * fields_count];
-    char field_valve[LENGTH_OF_FIELD];
+    char field_names[LENGTH_OF_FIELD_NAMES * fields_count];
+    char field_value[LENGTH_OF_FIELD_VALUE];
     fp_data = fopen(FILE_DATA, "a");
-    char records[LENGTH_OF_FIELD * fields_count];
-while(fgets(fields_name, sizeof(fields_name), fp_fields) != 0 ) {
-    fields_name[strlen(fields_name) - 1] = '\0';
-    printf("Enter %s: ", fields_name);
+    char record[LENGTH_OF_FIELD_VALUE * fields_count];
+while(fgets(field_names, sizeof(field_value), fp_fields) != 0 ) {
+    field_names[strlen(field_names) - 1] = '\0';
+    printf("Enter %s: ", field_names);
     fflush(stdin);
-    gets(field_valve);
-    fwrite(field_valve, 20, 1, fp_data);
+    gets(field_value);
+    fwrite(field_value, 20, 1, fp_data);
 } 
 fclose(fp_data);
 fclose(fp_fields);
 }
 
 
-void read(FILE *fp_data, int fields_count) {
+void read_records(FILE *fp_data, int fields_count) {
     printf("FILE VALEVES FROM READ BEFORE FOPEN.\n");
     fp_data = fopen(FILE_DATA, "r");
     int counter = 0;
-    char records[LENGTH_OF_FIELD * fields_count];
-    char record[LENGTH_OF_FIELD];
-    while(fread(record, LENGTH_OF_FIELD, 1, fp_data) > 0) {
-        printf("%s ", record);
+    char record[LENGTH_OF_RECORD * fields_count];
+    char field_valve[LENGTH_OF_FIELD_VALUE];
+    while(fread(field_valve, LENGTH_OF_FIELD_VALUE, 1, fp_data) > 0) {
+        printf("%s ", field_valve);
         counter = counter + 1;
         if(counter == fields_count) {
             printf("\n");
@@ -120,3 +131,4 @@ void read(FILE *fp_data, int fields_count) {
 void exitFromMainMenu() {
     printf("THANK YOU.");
     exit(0);
+}
