@@ -117,7 +117,7 @@ void show_main_menu(char **menu_names, char **field_names, int menu_names_count,
         scanf("%d", &option);
         switch(option) {
             case 1:
-                create_records(menu_names_count, field_names);
+                create_record(menu_names_count, field_names);
                 break;
             case 2:
                 reading_records(fields_count, field_names);
@@ -132,7 +132,7 @@ void show_main_menu(char **menu_names, char **field_names, int menu_names_count,
     }
 }
 
-void create_records(int fields_count) {  
+void create_record(int fields_count) {  
     FILE *fp_data;
     fp_data = fopen(DATA_FILE_NAME, "a");
     char field_names[FIELD_LINE_LENGTH];
