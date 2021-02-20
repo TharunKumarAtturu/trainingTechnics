@@ -1,0 +1,185 @@
+// framework to write the data into a file and read the data from the file.
+//.........................................................................
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define DATA_FILE_NAME "data1.dat"
+#define FIELD_FILE_NAME "fields.cfg"
+#define MENU_FILE_NAME "menu.cfg"
+#define MENU_LINE_LENGTH 20
+#define FIELD_LINE_LENGTH 20
+
+void show_main_menu();
+void create_records();
+void reading_records();
+void exit_from_main();
+int get_count_of_fields();
+char** store_field_names();
+char** store_menu_names();
+
+int menu_names_count;
+
+void main() {
+    int fields_count = get_count_of_fields();
+    char **field_names = store_field_names(fields_count);
+    char **menu_names = store_menu_names();
+    show_main_menu(menu_names, field_names, fields_count);
+}
+
+int get_count_of_fields(int fields_count) {
+    int fields_counter = 0;
+    FILE *fp_field; 
+    char field_name[FIELD_LINE_LENGTH];
+    fp_field = fopen(FIELD_FILE_NAME, "r");
+    if(fp_field == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        while(fgets(field_name, sizeof(field_name), fp_field) > 0) {
+            fields_counter = fields_counter + 1;
+        }
+        fields_count = fields_counter; 
+    }
+    fclose(fp_field);
+    return fields_count;
+}
+
+char** store_field_names(int fields_count) {
+    char **field_names;
+    int field_counter = 0;
+    FILE *fp_field; 
+    char field_line[MENU_LINE_LENGTH];
+    fp_field = fopen(FIELD_FILE_NAME, "r");
+    if(fp_field == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        field_names = (char**) malloc(fields_count * FIELD_LINE_LENGTH);
+        fseek(fp_field, 0, SEEK_SET);
+        while(fgets(field_line, sizeof(field_line), fp_field) > 0) {
+            
+            field_line[strlen(field_line) - 1] = '\0';
+            field_names[field_counter] = (char*) malloc(FIELD_LINE_LENGTH);
+            strcpy(field_names[field_counter], field_line);
+            field_counter++;
+        }
+    }
+    fclose(fp_field);
+    return field_names;
+}
+
+char** store_menu_names() {
+    char **menu_name;
+    menu_names_count = 0;
+    int menu_name_counter = 0;
+    FILE *fp_menu; 
+    char menu_line[MENU_LINE_LENGTH];
+    fp_menu = fopen(MENU_FILE_NAME, "r");
+    if(fp_menu == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        while(fgets(menu_line, sizeof(menu_line), fp_menu) > 0) {
+            menu_name_counter = menu_name_counter+ 1;
+        }
+        menu_name = (char**)malloc(menu_names_count * MENU_LINE_LENGTH);
+        fseek(fp_menu, 0, SEEK_SET);
+        while(fgets(menu_line, sizeof(menu_line), fp_menu) > 0) {
+            menu_name[menu_name_counter] = (char*)malloc(MENU_LINE_LENGTH);
+            strcpy(menu_name[menu_name_counter], menu_line);
+            menu_name_counter++;
+        }
+    }
+    fclose(fp_menu);
+    return menu_name;
+}
+int get_lines_count(char lines[], FILE *fp_pointer){
+    int line_counter = 0;
+    while(fgets(lines, sizeof(FIELD_LINE_LENGTH), fp_pointer) > 0)
+        {
+            line_counter = line_counter + 1;
+        }
+        return line_counter;
+}
+
+
+void show_main_menu(char **menu_names, char **field_names, int menu_names_count, int fields_count) {
+    int option;
+    while(1) {
+        for(int counter = 0; counter < menu_names_count; counter++) {
+            printf("%s", menu_names[counter]);
+        }
+        printf("\nEnter your option: ");
+        scanf("%d", &option);
+        switch(option) {
+            case 1:
+                create_records(menu_names_count, field_names);
+                break;
+            case 2:
+                reading_records(fields_count, field_names);
+                break;
+            case 3:
+                exit_from_main();
+                break;
+            default:
+                printf("Error! Please Enter the valid option.\n");
+                break;
+        }
+    }
+}
+
+void create_records(int fields_count) {  
+    FILE *fp_data;
+    fp_data = fopen(DATA_FILE_NAME, "a");
+    char field_names[FIELD_LINE_LENGTH];
+    char field_value[FIELD_LINE_LENGTH];
+    if(fp_data == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        for(int counter = 0; counter < fields_count; counter++) {
+            fflush(stdin);
+            printf("Enter %s: ", field_names[counter]);
+            gets(field_value);
+            fwrite(field_value, FIELD_LINE_LENGTH, 1, fp_data);
+        }
+    }
+    fclose(fp_data);
+}
+
+void reading_records(int fields_count, char **field_names) {
+    FILE *fp_data;
+    fp_data = fopen(DATA_FILE_NAME, "r");
+    char field_value[FIELD_LINE_LENGTH];
+    int counter;
+    for(counter = 0; counter < fields_count; counter++) {
+        printf("%s\t", field_names[counter]);
+    }
+    printf("\n");
+    if(fp_data == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {  
+        counter = 0;
+        while(fread(field_value, FIELD_LINE_LENGTH, 1, fp_data) > 0) {
+            printf("%s\t", field_value);
+            counter = counter + 1;
+            if(counter == fields_count) {
+                printf("\n");
+                counter = 0;
+            }
+        }
+    }
+    fclose(fp_data);
+}
+
+void exit_from_main() {
+    printf("Thank you.");
+    exit(0);
+}
