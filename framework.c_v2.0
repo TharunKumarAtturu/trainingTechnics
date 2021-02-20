@@ -1,0 +1,149 @@
+// framework to write the data into a file and read the data from the file.
+//.........................................................................
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define DATA_FILE_NAME "data1.dat"
+#define FIELD_FILE_NAME "fields.cfg"
+#define MENU_FILE_NAME "menu.cfg"
+#define MENU_LINE_LENGTH 20
+#define FIELD_LINE_LENGTH 20
+#define LINE_LENGTH 20
+
+void show_main_menu();
+int create_records();
+int reading_records();
+void exit_from_main();
+int get_line_count_from_text_file();
+char** store_lines_into_array();
+
+int fields_count = 0;
+int menu_lines_count = 0;
+void main() {
+    fields_count = get_line_count_from_text_file(FIELD_FILE_NAME);
+    menu_lines_count = get_line_count_from_text_file(MENU_FILE_NAME);
+    char **field_names = store_lines_into_array(FIELD_FILE_NAME, fields_count);
+    char **menu_names = store_lines_into_array(MENU_FILE_NAME, menu_lines_count);
+    show_main_menu(menu_names, field_names);
+}
+
+int get_line_count_from_text_file(char *file_name) {
+    int line_counter = 0;
+    FILE *fp_text;
+    char line[LINE_LENGTH];
+    fp_text = fopen(file_name, "r");
+    if(fp_text == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        while(fgets(line, sizeof(line), fp_text) > 0) {
+            line_counter = line_counter + 1;
+        }
+    }
+    fclose(fp_text);
+    return line_counter;
+}
+
+char** store_lines_into_array(char* file_name, int lines_count) {
+    char  **lines_list;
+    int line_counter = 0;
+    FILE *fp_text;
+    char  text_line[LINE_LENGTH];
+    fp_text = fopen(file_name, "r");
+    if(fp_text == NULL) {
+      printf("Error!");
+        exit(0);
+    }
+    else {
+        lines_list = (char**) malloc(lines_count * sizeof(char*));
+        while(fgets(text_line, sizeof(text_line), fp_text) > 0) {
+            text_line[strlen(text_line) - 1] = '\0';
+            lines_list[line_counter] = (char*) malloc(LINE_LENGTH);
+            strcpy(lines_list[line_counter], text_line);
+            line_counter++;
+        }
+
+    }
+    fclose(fp_text);
+    return lines_list;  
+}
+
+void show_main_menu(char** menu_names, char**field_names) {
+    int option;
+    while(1) {
+        for(int counter = 0; counter < menu_lines_count; counter++) {
+            printf("%s\n", menu_names[counter]);
+        }
+        printf("\nEnter your option: ");
+        scanf("%d", &option);
+        switch(option) {
+            case 1:
+                create_records(menu_names, field_names);
+                break;
+            case 2:
+                reading_records(field_names);
+                break;
+            case 3:
+                exit_from_main();
+                break;
+            default:
+                printf("Error! Please Enter the valid option.\n");
+                break;
+        }
+    }
+}
+
+int create_records(char** menu_names, char** fields_names) {  
+    FILE *fp_data;
+    fp_data = fopen(DATA_FILE_NAME, "a");
+    char field_names[FIELD_LINE_LENGTH];
+    char field_value[FIELD_LINE_LENGTH];
+    if(fp_data == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {
+        for(int counter = 0; counter < fields_count; counter++) {
+            fflush(stdin);
+            printf("Enter %s: ", field_names[counter]);
+            gets(field_value);
+            fwrite(field_value, FIELD_LINE_LENGTH, 1, fp_data);
+        }
+    }
+    fclose(fp_data);
+    return 0;
+}
+
+int reading_records(char **field_names) {
+    FILE *fp_data;
+    fp_data = fopen(DATA_FILE_NAME, "r");
+    char field_value[FIELD_LINE_LENGTH];
+    int counter;
+    for(counter = 0; counter < fields_count; counter++) {
+        printf("%s\t", field_names[counter]);
+    }
+    printf("\n");
+    if(fp_data == NULL) {
+        printf("Error!");
+        exit(0);
+    }
+    else {  
+        counter = 0;
+        while(fread(field_value, FIELD_LINE_LENGTH, 1, fp_data) > 0) {
+            printf("%s\t", field_value);
+            counter = counter + 1;
+            if(counter == fields_count) {
+                printf("\n");
+                counter = 0;
+            }
+        }
+    }
+    fclose(fp_data);
+    return 0;
+}
+
+void exit_from_main() {
+    printf("Thank you.");
+    exit(0);
+}
