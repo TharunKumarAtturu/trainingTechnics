@@ -1,0 +1,78 @@
+import sqlite3
+MENU_FILE = "menu.cfg"
+DATABASENAME = "empolyees.db"
+
+connection = sqlite3.connect(DATABASENAME)
+cursor = connection.cursor()
+
+def create_table():
+
+		sql = ''' CREATE TABLE employee (
+		EMPLOYEE_ID TEXT PRIMARY KEY NOT NULL,
+		NAME TEXT NOT NULL,
+		EMAIL TEXT,
+		PHONE TEXT NOT NULL
+		);
+		'''
+		cursor.execute(sql)
+		connection.commit()
+		print("Table created successfully.")
+
+def add_record():
+	employee_id = int(input("Enter Employee Id: "))
+	name = input("Enter Employee Name: ")
+	email = input("Enter Mail Id: ")
+	mobile = input("Enter mobile number: ")
+	cursor.execute("INSERT INTO employee VALUES(?,?,?,?)", (employee_id, name, email, mobile))
+	connection.commit()
+	print("Record added successfully.")
+
+def read_records():
+	query = connection.execute("SELECT * FROM employee")
+	[print(record[0], record[1], record[2], record[3])for record in query]
+
+def update_record():
+	tempId = input("Enter Id number to update the record: ")
+	query = cursor.execute("SELECT * FROM employee")
+	for data in query:
+		if data[0] == tempId:
+			print("1. NAME\n2. EMAIL ID\n3. MOBILE NUMBER\n")
+			option = int(input("Select one option to update:  "))
+			if option == 1:
+				name =  input("Enter new Name: ")
+				cursor.execute(" UPDATE employee  SET NAME = ? WHERE employee_id = ?", (name, tempId))
+
+			if option == 2:
+				email = input("Enter new Mail Id: ")
+				cursor.execute(" UPDATE employee  SET EMAIL = ? WHERE employee_id = ?", (email, tempId))
+
+			if option == 3:
+				mobile = input("Enter new Mobile number: ")
+				cursor.execute(" UPDATE employee  SET PHONE = ? WHERE employee_id = ?", (mobile, tempId))
+
+		connection.commit()
+
+
+def delete_record():
+	tempId = input("Enter Id number to delete the record: ")
+	query = cursor.execute("SELECT * FROM employee")
+	for data in query:
+		if data[0] == tempId:
+			cursor.execute("DELETE FROM employee WHERE employee_id = ?" + tempId)
+
+		connection.commit()
+
+
+def exit_from_menu():
+	print("Thank you.")
+	exit()    
+
+
+def show_main_menu():
+	while True:
+		print("\nChoose one option: ")
+		print(open(MENU_FILE).read())
+		[create_table, add_record, read_records, update_record, delete_record, exit_from_menu][int(input("Enter your choice: ")) - 1]()
+
+
+show_main_menu()	
