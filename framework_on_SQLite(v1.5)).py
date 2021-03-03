@@ -14,7 +14,7 @@ for field_names in meta_data:
 
 def print_update_menu():
 	'''Prints the Update Menu options.'''
-	for counter in range(1, (len(field_names_list) - 1)):
+	for counter in range(1, (len(field_names_list))):
 		print(str(counter) + ". " + field_names_list[counter])
 
 
@@ -36,18 +36,22 @@ def insert_a_record():
 	
 	except Exception as error:
 		print("Error!" + error)
+		connection.commit()
+		connection.rollback()
 		print("Record insertion failed.")
 	
 	else:
 		print("Record added successfully.")
 
 def show_all_records():
-	'''Read's all the records from the current table and print them to the output screen. '''
+	'''Reads all the records from the current table and print them to the output screen. '''
 	try:
-		records = connection.execute("SELECT * FROM " + TABLE_NAME + " WHERE " + field_names_list[-1] + " = 1")
+		records = connection.execute("SELECT * FROM " + TABLE_NAME)
 
 	except Exception as error:
 		print("Error!", error)
+		connection.commit()
+		connection.rollback()
 		print("Displaying Record failed.")
 	else:
 		print(field_names_list)
@@ -62,7 +66,7 @@ def update_a_record():
 			
 	try:	
 		option = int(input("Select one option to update:  "))
-		if option > 0 and option < (len(field_names_list) - 1):
+		if option > 0 and option < (len(field_names_list)):
 			temporary_data =  input("Enter new " + field_names_list[option] + " : ")
 			cursor.execute(" UPDATE " + TABLE_NAME + " SET " +  field_names_list[option] + " = ? WHERE " + field_names_list[0] + " = ?", (temporary_data, temporary_id))
 			connection.commit()
@@ -76,15 +80,17 @@ def update_a_record():
 			elif result == 0:
 				print("Error! Invalid " + field_names_list[0] + ": " + temporary_id + "." )
 		
-		elif option > (len(field_names_list) - 1) and option < 0:
+		elif option > (len(field_names_list)) and option < 0:
 			print("Enter the valid option.")
 
 	except Exception as error:
 		print("Error!", error)
+		connection.commit()
+		connection.rollback()
 		print("Update failed.")
 
 def delete_a_record():
-	''' Insert the Record into delete record table and Delete's that record from the table.'''
+	''' Insert the Record into deleted record table and Delete that record from the table.'''
 	try:
 		temporary_id = input("Enter " + field_names_list[0] + " to delete the record: ")
 	# 	cursor.execute("UPDATE " + TABLE_NAME +  "SET " + field_names_list[-1] + "= 0" +" WHERE " + field_names_list[0] + " = " + temporary_id)
@@ -102,36 +108,41 @@ def delete_a_record():
 	
 	except Exception as error:
 		print("Error!", error)
+		connection.commit()
+		connection.rollback()
 		print("Deleting a record operation failed!")
 
+
 def search_a_record():
-	'''Find and display's then record, if given temporary id matches with the primary key.'''
+	'''Find and displays that record, if given temporary id matches with the primary key.'''
 	try:
+		matched_record = []
 		temporary_id = input("Enter " + field_names_list[0] + " to find the record: ")
 		record_data = connection.execute("SELECT * FROM " + TABLE_NAME + " WHERE " + field_names_list[0] + " = " + temporary_id)
-		result = cursor.rowcount
+		# print(cursor.rowcount)
+		for record in record_data:
+			matched_record.append(record)
 			
-		if result == 1:
-			matched_record = []
-			for record in record_data:
-				matched_record.append(record)
+		if matched_record != []:
 				print(matched_record)
 		
-		elif result != 0:
+		else:
 			print("No Record found with " + field_names_list[0] + ": " + temporary_id) 
 	
 	except Exception as error:
 		print("Error!", error)
+		connection.commit()
+		connection.rollback()
 		print("Search operation failed.")
 
 def exit_from_main_menu():
-	'''Exit's from program.'''
+	'''Exits from main.'''
 	print("Thank you.")
 	connection.close()
 	exit()
 
 def show_main_menu():
-	'''Display's the Main menu on the output screen.'''
+	'''Displays the Main menu on the output screen.'''
 	while True:
 		print(open(MENU_FILE).read())
 		[insert_a_record, show_all_records, update_a_record, delete_a_record, search_a_record, exit_from_main_menu][int(input("Enter your option: ")) - 1]()
