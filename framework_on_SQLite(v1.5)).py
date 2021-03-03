@@ -50,8 +50,6 @@ def show_all_records():
 
 	except Exception as error:
 		print("Error!", error)
-		connection.commit()
-		connection.rollback()
 		print("Displaying Record failed.")
 	else:
 		print(field_names_list)
