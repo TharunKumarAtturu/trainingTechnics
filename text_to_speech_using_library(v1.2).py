@@ -5,8 +5,7 @@ number = []
 given_number = input("Enter a number: ")
 def text_to_speech_using_library():
   try:
-    [number.append(digit + " ") for digit in given_number]
-    engine.say(number)
+    [engine.say(digit) for digit in given_number]
     engine.runAndWait()
 
   except Exception as error:
