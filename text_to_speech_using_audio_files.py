@@ -1,17 +1,16 @@
-''' Text to Speech '''
+''' Text to Speech using audio files. '''
 from playsound import playsound 
 number_list = []
 given_number = input("Enter a number: ")
+def text_to_audio():
+	try:
+		for x in given_number:
+			number_list.append(x)
+		for number in number_list:
+			playsound( number + ".wav") 
 
-for x in given_number :
-	number_list.append(x)
+	except Exception as error:
+		print("Error!", error)
+		print("Text to speech failed!")
 
-for number in number_list:
-	playsound( number + ".wav") 
-
-
-# import pyttsx3
-# engine = pyttsx3.init()
-# text = "1 2 3 4"
-# engine.say(text)
-# engine.runAndWait()
+text_to_audio()
