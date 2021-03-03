@@ -4,7 +4,7 @@ number_list = []
 given_number = input("Enter a number: ")
 def text_to_audio():
 	try:
-		[playsound(x + '.wav') for x in given_number]
+		[playsound(digit + '.wav') for digit in given_number]
 
 	except Exception as error:
 		print("Error!", error)
