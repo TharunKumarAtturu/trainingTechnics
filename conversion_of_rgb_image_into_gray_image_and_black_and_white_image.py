@@ -18,5 +18,6 @@ else:
 	cv2.imshow('Black And White image', black_and_white_image)
 	cv2.imshow('Original image',original_image)
 	cv2.imshow('Gray image', gray_image)
+	
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
