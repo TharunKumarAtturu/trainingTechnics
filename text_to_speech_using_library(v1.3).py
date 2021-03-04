@@ -12,4 +12,4 @@ def convert_text_to_audio_using_library(input_string):
 	  print("Error!", error)
 	  print("Text to speech failed!")
   
-covert_text_to_audio_using_library(given_number):
+convert_text_to_audio_using_library(given_number)
