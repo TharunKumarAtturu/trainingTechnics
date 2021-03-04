@@ -13,7 +13,6 @@ except Exception as error:
 	print("Error!", error)
 	print("Conversion Failed!")
 
-
 else:
   '''Displays the Original Image (BGR), converted Gray Image and converted Black and Image.'''
 	cv2.imshow('Black And White image', black_and_white_image)
