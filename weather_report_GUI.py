@@ -6,7 +6,7 @@ window = Tk()
 window.geometry("400x400")
 window.title("Weather Report")
 window.configure(background = "#50514F")
-window.iconbitmap("weatherIcon.png")
+window.iconbitmap("weather_report_icon.ico")
 
 def display_weather_report(root = "none"):
 	try:
