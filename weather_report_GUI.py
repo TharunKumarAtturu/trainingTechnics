@@ -34,7 +34,7 @@ def display_weather_report(root = "none"):
 
 		city_label.config(text = ("Error!", error))
 		
-# tkinter intry box and label creation
+# tkinter entry box and label creation
 input_city = Entry(window, width='15', font=("Roboto", 15))
 input_city.grid(row = 0, column = 1)
 button = Button(window, text = "Go", command = display_weather_report)
