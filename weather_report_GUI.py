@@ -28,7 +28,7 @@ def get_weather_report():
 			humidity_label.config(text = "Humidity: " + str(current_humidiy) + "%")
 		
 		else:
-			("city Not Found!")
+			("City Not Found!")
 
 	except Exception as error:
 
