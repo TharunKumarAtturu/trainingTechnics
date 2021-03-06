@@ -29,9 +29,6 @@ def handle_client(conn, addr):
 
 	conn.close()
 
-
-
-
 def start():
 	server.listen()
 	print(f"[LISTENING] Server is listening on {SERVER}")
