@@ -1,3 +1,4 @@
+'''Server for remote client.'''
 import socket 
 import threading
 
@@ -12,6 +13,7 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 def handle_client(conn, addr):
+	'''Handles the connection betweeen server and client.'''
 	print(f"[NEW CONNECTION] {addr} connected.")
 	connected = True
 	while connected:
@@ -40,5 +42,5 @@ def start():
 		thread.start()
 		print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}") 
 
-print("[ATARTING] server is starting...")
+print("[STARTING] server is starting...")
 start()
