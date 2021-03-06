@@ -1,4 +1,4 @@
-'''Client which can connect to Local machine server.'''
+'''Local client for a Local machine server.'''
 import socket
 #Creating socket object
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
