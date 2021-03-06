@@ -5,7 +5,7 @@ import threading
 HEADER = 64
 PORT = 1436
 FORMAT = "utf-8"
-# SERVER = ""165.22.14.77
+# SERVER = "165.22.14.77"
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "DISCONNECT"
